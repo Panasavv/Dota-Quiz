@@ -24,7 +24,6 @@ func GetQuestion(s string, onepointers int, twopointers int, threepointers int) 
 		var onePointers interfaces.OnePointers
 		json.Unmarshal(byteValue, &onePointers)
 		k := rand.Intn(8)
-		fmt.Println(k)
 		questionsReturned = append(questionsReturned, onePointers.OnePointers[k])
 	}
 	for i := 0; i < twopointers; i++ {
@@ -32,7 +31,6 @@ func GetQuestion(s string, onepointers int, twopointers int, threepointers int) 
 		var twoPointers interfaces.TwoPointers
 		json.Unmarshal(byteValue, &twoPointers)
 		k := rand.Intn(8)
-		fmt.Println(k)
 		questionsReturned = append(questionsReturned, twoPointers.TwoPointers[k])
 	}
 	for i := 0; i < threepointers; i++ {
@@ -40,7 +38,6 @@ func GetQuestion(s string, onepointers int, twopointers int, threepointers int) 
 		var threePointers interfaces.ThreePointers
 		json.Unmarshal(byteValue, &threePointers)
 		k := rand.Intn(8)
-		fmt.Println(k)
 		questionsReturned = append(questionsReturned, threePointers.ThreePointers[k])
 	}
 	return questionsReturned, nil

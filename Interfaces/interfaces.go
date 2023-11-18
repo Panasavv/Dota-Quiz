@@ -23,12 +23,31 @@ type Question struct {
 }
 
 type QCategory struct {
-	Category1 bool
-	Category2 bool
-	Category3 bool
-	Category4 bool
-	Category5 bool
-	Category6 bool
-	Category7 bool
-	Category8 bool
+	Category1 Category
+	Category2 Category
+	Category3 Category
+	Category4 Category
+	Category5 Category
+	Category6 Category
+	Category7 Category
+	Category8 Category
+}
+
+type Category struct {
+	IsPicked      bool
+	OnePointers   int
+	TwoPointers   int
+	ThreePointers int
+}
+
+type User struct {
+	Name      string
+	Points    int
+	Lifelines Helpers
+}
+
+type Helpers struct {
+	Fifty  bool
+	Phone  bool
+	Double bool
 }
