@@ -14,16 +14,16 @@ func main() {
 			ThreePointers: 3,
 		},
 		Category2: interfaces.Category{
-			IsPicked:      false,
+			IsPicked:      true,
 			OnePointers:   0,
 			TwoPointers:   2,
 			ThreePointers: 3,
 		},
 		Category3: interfaces.Category{
-			IsPicked:      false,
-			OnePointers:   0,
-			TwoPointers:   2,
-			ThreePointers: 3,
+			IsPicked:      true,
+			OnePointers:   1,
+			TwoPointers:   0,
+			ThreePointers: 1,
 		},
 		Category4: interfaces.Category{
 			IsPicked:      false,

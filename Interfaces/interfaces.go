@@ -20,6 +20,24 @@ type Question struct {
 	Fifty    string `json:"fifty"`
 	Qtype    string `json:"qtype"`
 	Comments string `json:"comments"`
+	IsPlayed bool   `json:"isplayed"`
+}
+
+type AllQuestions struct {
+	Category1 AllPoints
+	Category2 AllPoints
+	Category3 AllPoints
+	Category4 AllPoints
+	Category5 AllPoints
+	Category6 AllPoints
+	Category7 AllPoints
+	Category8 AllPoints
+}
+
+type AllPoints struct {
+	OnePointers   []Question
+	TwoPointers   []Question
+	ThreePointers []Question
 }
 
 type QCategory struct {
@@ -46,6 +64,24 @@ type User struct {
 	Lifelines Helpers
 }
 
+/*
+	type QuestionMap struct {
+		Category1 QuestionMapPoints
+		Category2 QuestionMapPoints
+		Category3 QuestionMapPoints
+		Category4 QuestionMapPoints
+		Category5 QuestionMapPoints
+		Category6 QuestionMapPoints
+		Category7 QuestionMapPoints
+		Category8 QuestionMapPoints
+	}
+
+	type QuestionMapPoints struct {
+		OnePointers   []bool
+		TwoPointers   []bool
+		ThreePointers []bool
+	}
+*/
 type Helpers struct {
 	Fifty  bool
 	Phone  bool
