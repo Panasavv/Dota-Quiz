@@ -22,13 +22,8 @@ func StartGame(qPlayed interfaces.QCategory) (interface{}, error) {
 	//Decide who plays first
 	fmt.Println("Heads or tails:")
 	fmt.Println(user1.Name + " Chooses! Heads? [Y/n]")
-	var isHeads string = ""
-	for {
-		fmt.Scan(&isHeads)
-		if isHeads == "Y" || isHeads == "n" {
-			break
-		}
-	}
+	var isHeads string = YNScanner()
+
 	coin := rand.Intn(2)
 	if isHeads == "Y" {
 		if coin == 1 {
@@ -50,14 +45,50 @@ func StartGame(qPlayed interfaces.QCategory) (interface{}, error) {
 
 	//Play all the questions picked
 	for i := 0; i < totalNumberOfQs; i++ {
+		var correctAnswer string = ""
+		//var needHelp, helpScan string = "", ""
 		//Active player chooses the question they wish
 		qPicked = chooseQuestion(isActive, qPlayed, qsToBePlayed)
-		if isActive == user1 {
-			isActive = user2
-		} else {
-			isActive = user1
+		qPoints, err := strconv.Atoi(qPicked.Points)
+
+		if err != nil {
+			fmt.Println(err)
 		}
-		fmt.Println(qPicked)
+
+		fmt.Println(qPicked.Text)
+
+		//Helps
+		/*
+			fmt.Println("Do you need to use any help? [Y/n]")
+			needHelp = YNScanner()
+			if needHelp == "Y"{
+				fmt.Println("Which one? [1/2/3]?")
+				fmt.Scan(&helpScan)
+				switch helpScan {
+				case "1":
+
+				}
+			}
+		*/
+		fmt.Println("Was the question answered correctly? [Y/n]")
+		correctAnswer = YNScanner()
+		if correctAnswer == "Y" {
+			if isActive.Name == user1.Name {
+				user1.Points += qPoints
+				isActive = user2
+			} else {
+				user2.Points += qPoints
+				isActive = user1
+			}
+		} else {
+			if isActive.Name == user1.Name {
+				isActive = user2
+			} else {
+				isActive = user1
+			}
+		}
+		fmt.Println(user1)
+		fmt.Println(user2)
 	}
 	return nil, nil
 }
@@ -80,9 +111,9 @@ func chooseQuestion(activePlayer interfaces.User, qPlayed interfaces.QCategory, 
 	cat6String, cat6Counter := PrintQuestions(cat5Counter, qPlayed.Category6, qsRemaining.Category6)
 	fmt.Println("Category 6: ", cat6String)
 	cat7String, cat7Counter := PrintQuestions(cat6Counter, qPlayed.Category7, qsRemaining.Category7)
-	fmt.Println("Category 7: ", cat7String)
+	fmt.Println("Category 7: ", cat7String, cat7Counter)
 	cat8String, cat8Counter := PrintQuestions(cat7Counter, qPlayed.Category8, qsRemaining.Category8)
-	fmt.Println("Category 8: ", cat8String)
+	fmt.Println("Category 8: ", cat8String, cat8Counter)
 
 	//sumCounter := cat1Counter + cat2Counter + cat3Counter + cat4Counter + cat5Counter + cat6Counter + cat7Counter + cat8Counter
 	for {
@@ -101,19 +132,19 @@ func chooseQuestion(activePlayer interfaces.User, qPlayed interfaces.QCategory, 
 			questionPicked = chosenQuestion(questionIndex-cat2Counter, qPlayed.Category3, qsRemaining.Category3)
 			break
 		} else if questionIndex < cat4Counter {
-			questionPicked = chosenQuestion(questionIndex, qPlayed.Category4, qsRemaining.Category4)
+			questionPicked = chosenQuestion(questionIndex-cat3Counter, qPlayed.Category4, qsRemaining.Category4)
 			break
 		} else if questionIndex < cat5Counter {
-			questionPicked = chosenQuestion(questionIndex, qPlayed.Category5, qsRemaining.Category5)
+			questionPicked = chosenQuestion(questionIndex-cat4Counter, qPlayed.Category5, qsRemaining.Category5)
 			break
 		} else if questionIndex < cat6Counter {
-			questionPicked = chosenQuestion(questionIndex, qPlayed.Category6, qsRemaining.Category6)
+			questionPicked = chosenQuestion(questionIndex-cat5Counter, qPlayed.Category6, qsRemaining.Category6)
 			break
 		} else if questionIndex < cat7Counter {
-			questionPicked = chosenQuestion(questionIndex, qPlayed.Category7, qsRemaining.Category7)
+			questionPicked = chosenQuestion(questionIndex-cat6Counter, qPlayed.Category7, qsRemaining.Category7)
 			break
 		} else if questionIndex < cat8Counter {
-			questionPicked = chosenQuestion(questionIndex, qPlayed.Category8, qsRemaining.Category8)
+			questionPicked = chosenQuestion(questionIndex-cat7Counter, qPlayed.Category8, qsRemaining.Category8)
 			break
 		} else {
 			fmt.Println("This number is bigger than the number of questions left!")
@@ -140,7 +171,7 @@ func chosenQuestion(questionIndex int, questionCategory interfaces.Category, qCa
 	} else {
 		if questionIndex < questionCategory.OnePointers {
 			return qCategoryTBP.OnePointers[questionIndex]
-		} else if questionIndex < questionCategory.TwoPointers {
+		} else if questionIndex < (questionCategory.TwoPointers + questionCategory.OnePointers) {
 			return qCategoryTBP.TwoPointers[questionIndex-questionCategory.OnePointers]
 		} else {
 			return qCategoryTBP.ThreePointers[questionIndex-questionCategory.OnePointers-questionCategory.TwoPointers]
@@ -244,4 +275,15 @@ func QuestionHandler(qPlayed interfaces.QCategory) interfaces.AllQuestions {
 		allQuestions.Category8, _ = questions.GetQuestion("QFolder/Category8.json", qPlayed.Category8.OnePointers, qPlayed.Category8.TwoPointers, qPlayed.Category8.ThreePointers)
 	}
 	return allQuestions
+}
+
+func YNScanner() string {
+	var tester string = ""
+	for {
+		fmt.Scan(&tester)
+		if tester == "Y" || tester == "n" {
+			break
+		}
+	}
+	return tester
 }
