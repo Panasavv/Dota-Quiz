@@ -46,7 +46,7 @@ func StartGame(qPlayed interfaces.QCategory) (interface{}, error) {
 	//Play all the questions picked
 	for i := 0; i < totalNumberOfQs; i++ {
 		var correctAnswer string = ""
-		//var needHelp, helpScan string = "", ""
+		var needHelp, doubleHelp string = "", ""
 		//Active player chooses the question they wish
 		qPicked = chooseQuestion(isActive, qPlayed, qsToBePlayed)
 		qPoints, err := strconv.Atoi(qPicked.Points)
@@ -55,21 +55,46 @@ func StartGame(qPlayed interfaces.QCategory) (interface{}, error) {
 			fmt.Println(err)
 		}
 
-		fmt.Println(qPicked.Text)
-
 		//Helps
-		/*
-			fmt.Println("Do you need to use any help? [Y/n]")
-			needHelp = YNScanner()
-			if needHelp == "Y"{
-				fmt.Println("Which one? [1/2/3]?")
-				fmt.Scan(&helpScan)
-				switch helpScan {
-				case "1":
-
+		if isActive.Lifelines.Double {
+			fmt.Println("Do you want to double the points of this question? [Y/n]")
+			doubleHelp = YNScanner()
+			if doubleHelp == "Y" {
+				qPoints = 2 * qPoints
+				if isActive.Name == user1.Name {
+					user1.Lifelines.Double = false
+				} else {
+					user2.Lifelines.Double = false
 				}
 			}
-		*/
+		}
+		fmt.Println(qPicked.Text)
+
+		if isActive.Lifelines.Fifty {
+			fmt.Println("Do you need to use the 50/50 Lifeline? [Y/n]")
+			needHelp = YNScanner()
+			if needHelp == "Y" {
+				fmt.Println(qPicked.Fifty)
+				qPoints = 1
+				if isActive.Name == user1.Name {
+					user1.Lifelines.Fifty = false
+				} else {
+					user2.Lifelines.Fifty = false
+				}
+			}
+		}
+		if isActive.Lifelines.Phone {
+			fmt.Println("Do you need to use the Phone Lifeline? [Y/n]")
+			needHelp = YNScanner()
+			if needHelp == "Y" {
+				if isActive.Name == user1.Name {
+					user1.Lifelines.Phone = false
+				} else {
+					user2.Lifelines.Phone = false
+				}
+			}
+		}
+
 		fmt.Println("Was the question answered correctly? [Y/n]")
 		correctAnswer = YNScanner()
 		if correctAnswer == "Y" {
@@ -87,8 +112,8 @@ func StartGame(qPlayed interfaces.QCategory) (interface{}, error) {
 				isActive = user1
 			}
 		}
-		fmt.Println(user1)
-		fmt.Println(user2)
+		fmt.Printf(user1.Name+" has: %d points\n", user1.Points)
+		fmt.Printf(user2.Name+" has: %d points\n", user2.Points)
 	}
 	return nil, nil
 }
