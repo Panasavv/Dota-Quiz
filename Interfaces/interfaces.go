@@ -64,26 +64,23 @@ type User struct {
 	Lifelines Helpers
 }
 
-/*
-	type QuestionMap struct {
-		Category1 QuestionMapPoints
-		Category2 QuestionMapPoints
-		Category3 QuestionMapPoints
-		Category4 QuestionMapPoints
-		Category5 QuestionMapPoints
-		Category6 QuestionMapPoints
-		Category7 QuestionMapPoints
-		Category8 QuestionMapPoints
-	}
-
-	type QuestionMapPoints struct {
-		OnePointers   []bool
-		TwoPointers   []bool
-		ThreePointers []bool
-	}
-*/
+type Game struct {
+	Date	string
+	GameID	string
+	Participants 		[2]User
+	StartingQuestions 	AllQuestions
+	QuestionsPicked		AllQuestions
+	QuestionsRemaining 	AllQuestions
+	Winner	User
+}
 type Helpers struct {
 	Fifty  bool
 	Phone  bool
 	Double bool
+}
+
+type UniResponse[T any] struct {
+	Message string `json:"message"`
+	Data    T      `json:"data"`
+	Status  string `json:"status"`
 }

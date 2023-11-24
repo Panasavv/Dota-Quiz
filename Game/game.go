@@ -6,7 +6,27 @@ import (
 	"math/rand"
 	"questions"
 	"strconv"
+	"net/http"
+	"encoding/json"
 )
+
+func InitGame(w http.ResponseWriter, r *http.Request)(){
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	//response,err 
+	unires := interfaces.UniResponse[string]{
+		Message: "Hello",
+		Data: "",
+		Status: "200",
+	}
+	json.NewEncoder(w).Encode(unires)
+	return
+}
 
 func StartGame(qPlayed interfaces.QCategory) (interface{}, error) {
 	qsToBePlayed := QuestionHandler(qPlayed)

@@ -3,6 +3,8 @@ package main
 import (
 	"game"
 	"interfaces"
+	"net/http"
+	"fmt"
 )
 
 func main() {
@@ -56,6 +58,13 @@ func main() {
 			ThreePointers: 0,
 		},
 	}
+	Serve()
 	game.StartGame(*questionsPlayed)
+	
+}
 
+func Serve(){
+	http.HandleFunc("/startGame",game.InitGame)
+	fmt.Println("Listening (http://localhost:8080) ...")
+	http.ListenAndServe(":8080",nil)
 }
