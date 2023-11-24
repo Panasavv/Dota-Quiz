@@ -1,31 +1,132 @@
 package game
 
 import (
+	"errors"
 	"fmt"
 	"interfaces"
 	"math/rand"
+	"net/http"
 	"questions"
 	"strconv"
-	"net/http"
-	"encoding/json"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
-func InitGame(w http.ResponseWriter, r *http.Request)(){
-	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, Authorization")
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
+var games = make([]interfaces.Game, 0)
+
+func InitGame(c *gin.Context) {
+
+	newGame := interfaces.Game{
+		Date:               time.Now().String(),
+		GameID:             uuid.New().String(),
+		Participants:       make([]interfaces.User, 2),
+		StartingQuestions:  interfaces.AllQuestions{},
+		QuestionsPicked:    interfaces.AllQuestions{},
+		QuestionsRemaining: interfaces.AllQuestions{},
+		Winner:             interfaces.User{},
+	}
+	games = append(games, newGame)
+	fmt.Println(games[0])
+	//response,err
+	unires := interfaces.UniResponse[interfaces.Game]{
+		Message: "Hello",
+		Data:    newGame,
+		Status:  "200",
+	}
+	c.IndentedJSON(http.StatusOK, unires)
+}
+
+func getgameID(id string) (*interfaces.Game, error) {
+	for i, b := range games {
+		if b.GameID == id {
+			return &games[i], nil
+		}
+	}
+	return nil, errors.New("game not found")
+}
+
+func GetGameByID(c *gin.Context) {
+	id, ok := c.GetQuery("id")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "id is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
 		return
 	}
-	//response,err 
-	unires := interfaces.UniResponse[string]{
-		Message: "Hello",
-		Data: "",
-		Status: "200",
+
+	game, err := getgameID(id)
+	if err != nil {
+		unires := interfaces.UniResponse[string]{
+			Message: "Game not found",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
 	}
-	json.NewEncoder(w).Encode(unires)
-	return
+	unires := interfaces.UniResponse[interfaces.Game]{
+		Message: "Hello",
+		Data:    *game,
+		Status:  "200",
+	}
+	c.IndentedJSON(http.StatusOK, unires)
+}
+
+func SetUsers(c *gin.Context) {
+	id, ok := c.GetQuery("id")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "id is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+	user1, ok := c.GetQuery("user1")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "user1 is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+	user2, ok := c.GetQuery("user2")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "user2 is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+
+	game, err := getgameID(id)
+	if err != nil {
+		unires := interfaces.UniResponse[string]{
+			Message: "Game not found",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+	game.Participants[0].Name = user1
+	game.Participants[1].Name = user2
+	unires := interfaces.UniResponse[string]{
+		Message: "Success in setting users",
+		Data:    "",
+		Status:  "200",
+	}
+	c.IndentedJSON(http.StatusOK, unires)
 }
 
 func StartGame(qPlayed interfaces.QCategory) (interface{}, error) {

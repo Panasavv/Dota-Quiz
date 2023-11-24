@@ -3,8 +3,8 @@ package main
 import (
 	"game"
 	"interfaces"
-	"net/http"
-	"fmt"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -58,13 +58,11 @@ func main() {
 			ThreePointers: 0,
 		},
 	}
-	Serve()
+	router := gin.Default()
+	router.GET("/initGame", game.InitGame)
+	router.GET("/getGameByID", game.GetGameByID)
+	router.POST("/setUsers", game.SetUsers)
+	router.Run("localhost:8080")
 	game.StartGame(*questionsPlayed)
-	
-}
 
-func Serve(){
-	http.HandleFunc("/startGame",game.InitGame)
-	fmt.Println("Listening (http://localhost:8080) ...")
-	http.ListenAndServe(":8080",nil)
 }

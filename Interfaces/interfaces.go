@@ -65,13 +65,13 @@ type User struct {
 }
 
 type Game struct {
-	Date	string
-	GameID	string
-	Participants 		[2]User
-	StartingQuestions 	AllQuestions
-	QuestionsPicked		AllQuestions
-	QuestionsRemaining 	AllQuestions
-	Winner	User
+	Date               string       `json:"date"`
+	GameID             string       `json:"gameID"`
+	Participants       []User       `json:"participants"`
+	StartingQuestions  AllQuestions `json:"startingQuestions"`
+	QuestionsPicked    AllQuestions `json:"questionsPicked"`
+	QuestionsRemaining AllQuestions `json:"questionsRemaining"`
+	Winner             User         `json:"winner"`
 }
 type Helpers struct {
 	Fifty  bool
