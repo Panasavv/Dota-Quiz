@@ -68,9 +68,11 @@ type Game struct {
 	Date               string       `json:"date"`
 	GameID             string       `json:"gameID"`
 	Participants       []User       `json:"participants"`
+	ActivePlayer       User         `json:"activeplayer"`
 	StartingQuestions  AllQuestions `json:"startingQuestions"`
-	QuestionsPicked    AllQuestions `json:"questionsPicked"`
+	QuestionPicked     Question     `json:"questionsPicked"`
 	QuestionsRemaining AllQuestions `json:"questionsRemaining"`
+	TotalQuestions     int          `json:"totalquestions"`
 	Winner             User         `json:"winner"`
 }
 type Helpers struct {
@@ -83,4 +85,55 @@ type UniResponse[T any] struct {
 	Message string `json:"message"`
 	Data    T      `json:"data"`
 	Status  string `json:"status"`
+}
+
+var QuestionsPlayed = QCategory{
+	Category1: Category{
+		IsPicked:      true,
+		OnePointers:   1,
+		TwoPointers:   1,
+		ThreePointers: 1,
+	},
+	Category2: Category{
+		IsPicked:      true,
+		OnePointers:   0,
+		TwoPointers:   2,
+		ThreePointers: 0,
+	},
+	Category3: Category{
+		IsPicked:      true,
+		OnePointers:   0,
+		TwoPointers:   0,
+		ThreePointers: 2,
+	},
+	Category4: Category{
+		IsPicked:      true,
+		OnePointers:   1,
+		TwoPointers:   1,
+		ThreePointers: 1,
+	},
+	Category5: Category{
+		IsPicked:      true,
+		OnePointers:   1,
+		TwoPointers:   1,
+		ThreePointers: 1,
+	},
+	Category6: Category{
+		IsPicked:      true,
+		OnePointers:   3,
+		TwoPointers:   0,
+		ThreePointers: 0,
+	},
+	Category7: Category{
+		IsPicked:      true,
+		OnePointers:   0,
+		TwoPointers:   0,
+		ThreePointers: 2,
+	},
+	Category8: Category{
+		IsPicked:      true,
+		OnePointers:   0,
+		TwoPointers:   2,
+		ThreePointers: 0,
+	},
 }

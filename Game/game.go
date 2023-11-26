@@ -22,9 +22,11 @@ func InitGame(c *gin.Context) {
 		Date:               time.Now().String(),
 		GameID:             uuid.New().String(),
 		Participants:       make([]interfaces.User, 2),
+		ActivePlayer:       interfaces.User{},
 		StartingQuestions:  interfaces.AllQuestions{},
-		QuestionsPicked:    interfaces.AllQuestions{},
+		QuestionPicked:     interfaces.Question{},
 		QuestionsRemaining: interfaces.AllQuestions{},
+		TotalQuestions:     0,
 		Winner:             interfaces.User{},
 	}
 	games = append(games, newGame)
@@ -88,6 +90,18 @@ func SetUsers(c *gin.Context) {
 		c.IndentedJSON(http.StatusOK, unires)
 		return
 	}
+
+	game, err := getgameID(id)
+	if err != nil {
+		unires := interfaces.UniResponse[string]{
+			Message: "Game not found",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+
 	user1, ok := c.GetQuery("user1")
 	if !ok {
 		unires := interfaces.UniResponse[string]{
@@ -109,6 +123,31 @@ func SetUsers(c *gin.Context) {
 		return
 	}
 
+	game.Participants[0].Name = user1
+	game.Participants[1].Name = user2
+	coin := rand.Intn(2)
+	game.ActivePlayer = game.Participants[coin]
+
+	unires := interfaces.UniResponse[string]{
+		Message: string("Success in setting users. Active player is " + game.ActivePlayer.Name),
+		Data:    "",
+		Status:  "200",
+	}
+	c.IndentedJSON(http.StatusOK, unires)
+}
+
+func SetQuestions(c *gin.Context) {
+	id, ok := c.GetQuery("id")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "id is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+
 	game, err := getgameID(id)
 	if err != nil {
 		unires := interfaces.UniResponse[string]{
@@ -119,10 +158,16 @@ func SetUsers(c *gin.Context) {
 		c.IndentedJSON(http.StatusOK, unires)
 		return
 	}
-	game.Participants[0].Name = user1
-	game.Participants[1].Name = user2
+
+	qsToBePlayed := QuestionHandler(interfaces.QuestionsPlayed)
+	totalNumberOfQs := FindTotalQuestions(interfaces.QuestionsPlayed)
+
+	game.QuestionsRemaining = qsToBePlayed
+	game.StartingQuestions = qsToBePlayed
+	game.TotalQuestions = totalNumberOfQs
+
 	unires := interfaces.UniResponse[string]{
-		Message: "Success in setting users",
+		Message: "Success in setting questions in this game",
 		Data:    "",
 		Status:  "200",
 	}
