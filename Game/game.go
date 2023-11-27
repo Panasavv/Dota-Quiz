@@ -608,6 +608,147 @@ func SetCorrectAnswer(c *gin.Context) {
 	}
 }
 
+func chosenQuestion(questionIndex int, questionCategory interfaces.Category, qCategoryTBP interfaces.AllPoints) (interfaces.Question, interfaces.AllPoints) {
+	if questionCategory.OnePointers == 0 {
+		if questionCategory.TwoPointers == 0 {
+			r1 := qCategoryTBP.ThreePointers[questionIndex]
+			qCategoryTBP.ThreePointers = remove(qCategoryTBP.ThreePointers, questionIndex)
+			return r1, qCategoryTBP
+		} else if questionIndex < questionCategory.TwoPointers {
+			r1 := qCategoryTBP.TwoPointers[questionIndex]
+			qCategoryTBP.TwoPointers = remove(qCategoryTBP.TwoPointers, questionIndex)
+			return r1, qCategoryTBP
+		} else {
+			r1 := qCategoryTBP.ThreePointers[questionIndex-questionCategory.TwoPointers]
+			qCategoryTBP.ThreePointers = remove(qCategoryTBP.ThreePointers, questionIndex-questionCategory.TwoPointers)
+			return r1, qCategoryTBP
+		}
+	} else if questionCategory.TwoPointers == 0 {
+		if questionIndex < questionCategory.OnePointers {
+			r1 := qCategoryTBP.OnePointers[questionIndex]
+			qCategoryTBP.OnePointers = remove(qCategoryTBP.OnePointers, questionIndex)
+			return r1, qCategoryTBP
+		} else {
+			r1 := qCategoryTBP.ThreePointers[questionIndex-questionCategory.OnePointers]
+			qCategoryTBP.ThreePointers = remove(qCategoryTBP.ThreePointers, questionIndex-questionCategory.OnePointers)
+			return r1, qCategoryTBP
+		}
+	} else {
+		if questionIndex < questionCategory.OnePointers {
+			r1 := qCategoryTBP.OnePointers[questionIndex]
+			qCategoryTBP.OnePointers = remove(qCategoryTBP.OnePointers, questionIndex)
+			return r1, qCategoryTBP
+		} else if questionIndex < (questionCategory.TwoPointers + questionCategory.OnePointers) {
+			r1 := qCategoryTBP.TwoPointers[questionIndex-questionCategory.OnePointers]
+			qCategoryTBP.TwoPointers = remove(qCategoryTBP.TwoPointers, questionIndex-questionCategory.OnePointers)
+			return r1, qCategoryTBP
+		} else {
+			r1 := qCategoryTBP.ThreePointers[questionIndex-questionCategory.OnePointers-questionCategory.TwoPointers]
+			qCategoryTBP.ThreePointers = remove(qCategoryTBP.ThreePointers, questionIndex-questionCategory.OnePointers-questionCategory.TwoPointers)
+			return r1, qCategoryTBP
+		}
+	}
+}
+
+func PrintQuestions(counter int, questionCategory interfaces.Category, qCategoryTBP interfaces.AllPoints) (string, int) {
+	var catString string = ""
+	if questionCategory.IsPicked {
+		for i := 0; i < questionCategory.OnePointers; i++ {
+			if !qCategoryTBP.OnePointers[i].IsPlayed {
+				counter++
+				catString += "#" + strconv.Itoa(counter) + " " + qCategoryTBP.OnePointers[i].Points + " "
+			}
+		}
+		for j := 0; j < questionCategory.TwoPointers; j++ {
+			if !qCategoryTBP.TwoPointers[j].IsPlayed {
+				counter++
+				catString += "#" + strconv.Itoa(counter) + " " + qCategoryTBP.TwoPointers[j].Points + " "
+			}
+		}
+		for k := 0; k < questionCategory.ThreePointers; k++ {
+			if !qCategoryTBP.ThreePointers[k].IsPlayed {
+				counter++
+				catString += "#" + strconv.Itoa(counter) + " " + qCategoryTBP.ThreePointers[k].Points + " "
+			}
+		}
+	}
+	return catString, counter
+}
+
+func FindTotalQuestions(qPlayed interfaces.QCategory) int {
+	var totalSum int = 0
+	if qPlayed.Category1.IsPicked {
+		totalSum += qPlayed.Category1.OnePointers + qPlayed.Category1.TwoPointers + qPlayed.Category1.ThreePointers
+	}
+	if qPlayed.Category2.IsPicked {
+		totalSum += qPlayed.Category2.OnePointers + qPlayed.Category2.TwoPointers + qPlayed.Category2.ThreePointers
+	}
+	if qPlayed.Category3.IsPicked {
+		totalSum += qPlayed.Category3.OnePointers + qPlayed.Category3.TwoPointers + qPlayed.Category3.ThreePointers
+	}
+	if qPlayed.Category4.IsPicked {
+		totalSum += qPlayed.Category4.OnePointers + qPlayed.Category4.TwoPointers + qPlayed.Category4.ThreePointers
+	}
+	if qPlayed.Category5.IsPicked {
+		totalSum += qPlayed.Category5.OnePointers + qPlayed.Category5.TwoPointers + qPlayed.Category5.ThreePointers
+	}
+	if qPlayed.Category6.IsPicked {
+		totalSum += qPlayed.Category6.OnePointers + qPlayed.Category6.TwoPointers + qPlayed.Category6.ThreePointers
+	}
+	if qPlayed.Category7.IsPicked {
+		totalSum += qPlayed.Category7.OnePointers + qPlayed.Category7.TwoPointers + qPlayed.Category7.ThreePointers
+	}
+	if qPlayed.Category8.IsPicked {
+		totalSum += qPlayed.Category8.OnePointers + qPlayed.Category8.TwoPointers + qPlayed.Category8.ThreePointers
+	}
+	return totalSum
+}
+
+func QuestionHandler(qPlayed interfaces.QCategory) interfaces.AllQuestions {
+	allQuestions := interfaces.AllQuestions{}
+	if qPlayed.Category1.IsPicked {
+		allQuestions.Category1, _ = questions.GetQuestion("QFolder/Category1.json", qPlayed.Category1.OnePointers, qPlayed.Category1.TwoPointers, qPlayed.Category1.ThreePointers)
+	}
+	if qPlayed.Category2.IsPicked {
+		allQuestions.Category2, _ = questions.GetQuestion("QFolder/Category2.json", qPlayed.Category2.OnePointers, qPlayed.Category2.TwoPointers, qPlayed.Category2.ThreePointers)
+	}
+	if qPlayed.Category3.IsPicked {
+		allQuestions.Category3, _ = questions.GetQuestion("QFolder/Category3.json", qPlayed.Category3.OnePointers, qPlayed.Category3.TwoPointers, qPlayed.Category3.ThreePointers)
+	}
+	if qPlayed.Category4.IsPicked {
+		allQuestions.Category4, _ = questions.GetQuestion("QFolder/Category4.json", qPlayed.Category4.OnePointers, qPlayed.Category4.TwoPointers, qPlayed.Category4.ThreePointers)
+	}
+	if qPlayed.Category5.IsPicked {
+		allQuestions.Category5, _ = questions.GetQuestion("QFolder/Category5.json", qPlayed.Category5.OnePointers, qPlayed.Category5.TwoPointers, qPlayed.Category5.ThreePointers)
+	}
+	if qPlayed.Category6.IsPicked {
+		allQuestions.Category6, _ = questions.GetQuestion("QFolder/Category6.json", qPlayed.Category6.OnePointers, qPlayed.Category6.TwoPointers, qPlayed.Category6.ThreePointers)
+	}
+	if qPlayed.Category7.IsPicked {
+		allQuestions.Category7, _ = questions.GetQuestion("QFolder/Category7.json", qPlayed.Category7.OnePointers, qPlayed.Category7.TwoPointers, qPlayed.Category7.ThreePointers)
+	}
+	if qPlayed.Category8.IsPicked {
+		allQuestions.Category8, _ = questions.GetQuestion("QFolder/Category8.json", qPlayed.Category8.OnePointers, qPlayed.Category8.TwoPointers, qPlayed.Category8.ThreePointers)
+	}
+	return allQuestions
+}
+
+func remove(slice []interfaces.Question, s int) []interfaces.Question {
+	return append(slice[:s], slice[s+1:]...)
+}
+
+func removeQuestions(p interfaces.Question, a interfaces.Category) interfaces.Category {
+	if p.Points == "1" {
+		a.OnePointers--
+	} else if p.Points == "2" {
+		a.TwoPointers--
+	} else {
+		a.ThreePointers--
+	}
+	return a
+}
+
+/*
 func StartGame(qPlayed interfaces.QCategory) (interface{}, error) {
 	qsToBePlayed := QuestionHandler(qPlayed)
 	var qPicked interfaces.Question
@@ -718,6 +859,32 @@ func StartGame(qPlayed interfaces.QCategory) (interface{}, error) {
 	return nil, nil
 }
 
+func YNScanner() string {
+	var tester string = ""
+	for {
+		fmt.Scan(&tester)
+		if tester == "Y" || tester == "n" {
+			break
+		}
+	}
+	return tester
+}
+
+func AskForUser() interfaces.User {
+	var resp string
+	fmt.Scan(&resp)
+	user := interfaces.User{
+		Name:   resp,
+		Points: 0,
+		Lifelines: interfaces.Helpers{
+			Fifty:  true,
+			Phone:  true,
+			Double: true,
+		},
+	}
+	return user
+}
+
 func chooseQuestion(activePlayer interfaces.User, qPlayed interfaces.QCategory, qsRemaining interfaces.AllQuestions) interfaces.Question {
 	var questionIndex int
 	var questionPicked interfaces.Question
@@ -777,169 +944,4 @@ func chooseQuestion(activePlayer interfaces.User, qPlayed interfaces.QCategory, 
 	}
 	return questionPicked
 }
-
-func chosenQuestion(questionIndex int, questionCategory interfaces.Category, qCategoryTBP interfaces.AllPoints) (interfaces.Question, interfaces.AllPoints) {
-	if questionCategory.OnePointers == 0 {
-		if questionCategory.TwoPointers == 0 {
-			r1 := qCategoryTBP.ThreePointers[questionIndex]
-			qCategoryTBP.ThreePointers = remove(qCategoryTBP.ThreePointers, questionIndex)
-			return r1, qCategoryTBP
-		} else if questionIndex < questionCategory.TwoPointers {
-			r1 := qCategoryTBP.TwoPointers[questionIndex]
-			qCategoryTBP.TwoPointers = remove(qCategoryTBP.TwoPointers, questionIndex)
-			return r1, qCategoryTBP
-		} else {
-			r1 := qCategoryTBP.ThreePointers[questionIndex-questionCategory.TwoPointers]
-			qCategoryTBP.ThreePointers = remove(qCategoryTBP.ThreePointers, questionIndex-questionCategory.TwoPointers)
-			return r1, qCategoryTBP
-		}
-	} else if questionCategory.TwoPointers == 0 {
-		if questionIndex < questionCategory.OnePointers {
-			r1 := qCategoryTBP.OnePointers[questionIndex]
-			qCategoryTBP.OnePointers = remove(qCategoryTBP.OnePointers, questionIndex)
-			return r1, qCategoryTBP
-		} else {
-			r1 := qCategoryTBP.ThreePointers[questionIndex-questionCategory.OnePointers]
-			qCategoryTBP.ThreePointers = remove(qCategoryTBP.ThreePointers, questionIndex-questionCategory.OnePointers)
-			return r1, qCategoryTBP
-		}
-	} else {
-		if questionIndex < questionCategory.OnePointers {
-			r1 := qCategoryTBP.OnePointers[questionIndex]
-			qCategoryTBP.OnePointers = remove(qCategoryTBP.OnePointers, questionIndex)
-			return r1, qCategoryTBP
-		} else if questionIndex < (questionCategory.TwoPointers + questionCategory.OnePointers) {
-			r1 := qCategoryTBP.TwoPointers[questionIndex-questionCategory.OnePointers]
-			qCategoryTBP.TwoPointers = remove(qCategoryTBP.TwoPointers, questionIndex-questionCategory.OnePointers)
-			return r1, qCategoryTBP
-		} else {
-			r1 := qCategoryTBP.ThreePointers[questionIndex-questionCategory.OnePointers-questionCategory.TwoPointers]
-			qCategoryTBP.ThreePointers = remove(qCategoryTBP.ThreePointers, questionIndex-questionCategory.OnePointers-questionCategory.TwoPointers)
-			return r1, qCategoryTBP
-		}
-	}
-}
-
-func PrintQuestions(counter int, questionCategory interfaces.Category, qCategoryTBP interfaces.AllPoints) (string, int) {
-	var catString string = ""
-	if questionCategory.IsPicked {
-		for i := 0; i < questionCategory.OnePointers; i++ {
-			if !qCategoryTBP.OnePointers[i].IsPlayed {
-				counter++
-				catString += "#" + strconv.Itoa(counter) + " " + qCategoryTBP.OnePointers[i].Points + " "
-			}
-		}
-		for j := 0; j < questionCategory.TwoPointers; j++ {
-			if !qCategoryTBP.TwoPointers[j].IsPlayed {
-				counter++
-				catString += "#" + strconv.Itoa(counter) + " " + qCategoryTBP.TwoPointers[j].Points + " "
-			}
-		}
-		for k := 0; k < questionCategory.ThreePointers; k++ {
-			if !qCategoryTBP.ThreePointers[k].IsPlayed {
-				counter++
-				catString += "#" + strconv.Itoa(counter) + " " + qCategoryTBP.ThreePointers[k].Points + " "
-			}
-		}
-	}
-	return catString, counter
-}
-
-func AskForUser() interfaces.User {
-	var resp string
-	fmt.Scan(&resp)
-	user := interfaces.User{
-		Name:   resp,
-		Points: 0,
-		Lifelines: interfaces.Helpers{
-			Fifty:  true,
-			Phone:  true,
-			Double: true,
-		},
-	}
-	return user
-}
-
-func FindTotalQuestions(qPlayed interfaces.QCategory) int {
-	var totalSum int = 0
-	if qPlayed.Category1.IsPicked {
-		totalSum += qPlayed.Category1.OnePointers + qPlayed.Category1.TwoPointers + qPlayed.Category1.ThreePointers
-	}
-	if qPlayed.Category2.IsPicked {
-		totalSum += qPlayed.Category2.OnePointers + qPlayed.Category2.TwoPointers + qPlayed.Category2.ThreePointers
-	}
-	if qPlayed.Category3.IsPicked {
-		totalSum += qPlayed.Category3.OnePointers + qPlayed.Category3.TwoPointers + qPlayed.Category3.ThreePointers
-	}
-	if qPlayed.Category4.IsPicked {
-		totalSum += qPlayed.Category4.OnePointers + qPlayed.Category4.TwoPointers + qPlayed.Category4.ThreePointers
-	}
-	if qPlayed.Category5.IsPicked {
-		totalSum += qPlayed.Category5.OnePointers + qPlayed.Category5.TwoPointers + qPlayed.Category5.ThreePointers
-	}
-	if qPlayed.Category6.IsPicked {
-		totalSum += qPlayed.Category6.OnePointers + qPlayed.Category6.TwoPointers + qPlayed.Category6.ThreePointers
-	}
-	if qPlayed.Category7.IsPicked {
-		totalSum += qPlayed.Category7.OnePointers + qPlayed.Category7.TwoPointers + qPlayed.Category7.ThreePointers
-	}
-	if qPlayed.Category8.IsPicked {
-		totalSum += qPlayed.Category8.OnePointers + qPlayed.Category8.TwoPointers + qPlayed.Category8.ThreePointers
-	}
-	return totalSum
-}
-
-func QuestionHandler(qPlayed interfaces.QCategory) interfaces.AllQuestions {
-	allQuestions := interfaces.AllQuestions{}
-	if qPlayed.Category1.IsPicked {
-		allQuestions.Category1, _ = questions.GetQuestion("QFolder/Category1.json", qPlayed.Category1.OnePointers, qPlayed.Category1.TwoPointers, qPlayed.Category1.ThreePointers)
-	}
-	if qPlayed.Category2.IsPicked {
-		allQuestions.Category2, _ = questions.GetQuestion("QFolder/Category2.json", qPlayed.Category2.OnePointers, qPlayed.Category2.TwoPointers, qPlayed.Category2.ThreePointers)
-	}
-	if qPlayed.Category3.IsPicked {
-		allQuestions.Category3, _ = questions.GetQuestion("QFolder/Category3.json", qPlayed.Category3.OnePointers, qPlayed.Category3.TwoPointers, qPlayed.Category3.ThreePointers)
-	}
-	if qPlayed.Category4.IsPicked {
-		allQuestions.Category4, _ = questions.GetQuestion("QFolder/Category4.json", qPlayed.Category4.OnePointers, qPlayed.Category4.TwoPointers, qPlayed.Category4.ThreePointers)
-	}
-	if qPlayed.Category5.IsPicked {
-		allQuestions.Category5, _ = questions.GetQuestion("QFolder/Category5.json", qPlayed.Category5.OnePointers, qPlayed.Category5.TwoPointers, qPlayed.Category5.ThreePointers)
-	}
-	if qPlayed.Category6.IsPicked {
-		allQuestions.Category6, _ = questions.GetQuestion("QFolder/Category6.json", qPlayed.Category6.OnePointers, qPlayed.Category6.TwoPointers, qPlayed.Category6.ThreePointers)
-	}
-	if qPlayed.Category7.IsPicked {
-		allQuestions.Category7, _ = questions.GetQuestion("QFolder/Category7.json", qPlayed.Category7.OnePointers, qPlayed.Category7.TwoPointers, qPlayed.Category7.ThreePointers)
-	}
-	if qPlayed.Category8.IsPicked {
-		allQuestions.Category8, _ = questions.GetQuestion("QFolder/Category8.json", qPlayed.Category8.OnePointers, qPlayed.Category8.TwoPointers, qPlayed.Category8.ThreePointers)
-	}
-	return allQuestions
-}
-
-func YNScanner() string {
-	var tester string = ""
-	for {
-		fmt.Scan(&tester)
-		if tester == "Y" || tester == "n" {
-			break
-		}
-	}
-	return tester
-}
-
-func remove(slice []interfaces.Question, s int) []interfaces.Question {
-	return append(slice[:s], slice[s+1:]...)
-}
-
-func removeQuestions(p interfaces.Question, a interfaces.Category) interfaces.Category {
-	if p.Points == "1" {
-		a.OnePointers--
-	} else if p.Points == "2" {
-		a.TwoPointers--
-	} else {
-		a.ThreePointers--
-	}
-	return a
-}
+*/
