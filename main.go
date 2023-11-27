@@ -15,6 +15,10 @@ func main() {
 	router.POST("/setQuestions", game.SetQuestions)
 	router.GET("/getQuestions", game.GetQuestions)
 	router.GET("/getChosenQuestion", game.GetChosenQuestion)
+	router.GET("/getFifty", game.GetFifty)
+	router.GET("/getDouble", game.GetDouble)
+	router.GET("/getPhone", game.GetPhone)
+	router.POST("/setCorrectAnswer", game.SetCorrectAnswer)
 	router.Run("localhost:8080")
 	//game.StartGame(*QuestionsPlayed)
 

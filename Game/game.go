@@ -269,7 +269,7 @@ func GetChosenQuestion(c *gin.Context) {
 		c.IndentedJSON(http.StatusOK, unires)
 		return
 	}
-	qNumber, err := strconv.Atoi(qNumberPre)
+	qNumber, _ := strconv.Atoi(qNumberPre)
 	qNumber--
 	var questionPicked interfaces.Question
 
@@ -282,21 +282,38 @@ func GetChosenQuestion(c *gin.Context) {
 		c.IndentedJSON(http.StatusOK, unires)
 		return
 	} else if qNumber >= 0 && qNumber < questionResponse.Category1.CatCount {
-		questionPicked = chosenQuestion(qNumber, interfaces.QuestionsPlayed.Category1, game.QuestionsRemaining.Category1)
+		questionPicked, game.QuestionsRemaining.Category1 = chosenQuestion(qNumber, interfaces.QuestionsPlayed.Category1, game.QuestionsRemaining.Category1)
+		game.TotalQuestions--
+		interfaces.QuestionsPlayed.Category1 = removeQuestions(questionPicked, interfaces.QuestionsPlayed.Category1)
+		//edw vazw
 	} else if qNumber < questionResponse.Category2.CatCount {
-		questionPicked = chosenQuestion(qNumber-questionResponse.Category1.CatCount, interfaces.QuestionsPlayed.Category2, game.QuestionsRemaining.Category2)
+		questionPicked, game.QuestionsRemaining.Category2 = chosenQuestion(qNumber-questionResponse.Category1.CatCount, interfaces.QuestionsPlayed.Category2, game.QuestionsRemaining.Category2)
+		game.TotalQuestions--
+		interfaces.QuestionsPlayed.Category2 = removeQuestions(questionPicked, interfaces.QuestionsPlayed.Category2)
 	} else if qNumber < questionResponse.Category3.CatCount {
-		questionPicked = chosenQuestion(qNumber-questionResponse.Category2.CatCount, interfaces.QuestionsPlayed.Category3, game.QuestionsRemaining.Category3)
+		questionPicked, game.QuestionsRemaining.Category3 = chosenQuestion(qNumber-questionResponse.Category2.CatCount, interfaces.QuestionsPlayed.Category3, game.QuestionsRemaining.Category3)
+		game.TotalQuestions--
+		interfaces.QuestionsPlayed.Category3 = removeQuestions(questionPicked, interfaces.QuestionsPlayed.Category3)
 	} else if qNumber < questionResponse.Category4.CatCount {
-		questionPicked = chosenQuestion(qNumber-questionResponse.Category3.CatCount, interfaces.QuestionsPlayed.Category4, game.QuestionsRemaining.Category4)
+		questionPicked, game.QuestionsRemaining.Category4 = chosenQuestion(qNumber-questionResponse.Category3.CatCount, interfaces.QuestionsPlayed.Category4, game.QuestionsRemaining.Category4)
+		game.TotalQuestions--
+		interfaces.QuestionsPlayed.Category4 = removeQuestions(questionPicked, interfaces.QuestionsPlayed.Category4)
 	} else if qNumber < questionResponse.Category5.CatCount {
-		questionPicked = chosenQuestion(qNumber-questionResponse.Category4.CatCount, interfaces.QuestionsPlayed.Category5, game.QuestionsRemaining.Category5)
+		questionPicked, game.QuestionsRemaining.Category5 = chosenQuestion(qNumber-questionResponse.Category4.CatCount, interfaces.QuestionsPlayed.Category5, game.QuestionsRemaining.Category5)
+		game.TotalQuestions--
+		interfaces.QuestionsPlayed.Category5 = removeQuestions(questionPicked, interfaces.QuestionsPlayed.Category5)
 	} else if qNumber < questionResponse.Category6.CatCount {
-		questionPicked = chosenQuestion(qNumber-questionResponse.Category5.CatCount, interfaces.QuestionsPlayed.Category6, game.QuestionsRemaining.Category6)
+		questionPicked, game.QuestionsRemaining.Category6 = chosenQuestion(qNumber-questionResponse.Category5.CatCount, interfaces.QuestionsPlayed.Category6, game.QuestionsRemaining.Category6)
+		game.TotalQuestions--
+		interfaces.QuestionsPlayed.Category6 = removeQuestions(questionPicked, interfaces.QuestionsPlayed.Category6)
 	} else if qNumber < questionResponse.Category7.CatCount {
-		questionPicked = chosenQuestion(qNumber-questionResponse.Category6.CatCount, interfaces.QuestionsPlayed.Category7, game.QuestionsRemaining.Category7)
+		questionPicked, game.QuestionsRemaining.Category7 = chosenQuestion(qNumber-questionResponse.Category6.CatCount, interfaces.QuestionsPlayed.Category7, game.QuestionsRemaining.Category7)
+		game.TotalQuestions--
+		interfaces.QuestionsPlayed.Category7 = removeQuestions(questionPicked, interfaces.QuestionsPlayed.Category7)
 	} else if qNumber < questionResponse.Category8.CatCount {
-		questionPicked = chosenQuestion(qNumber-questionResponse.Category7.CatCount, interfaces.QuestionsPlayed.Category8, game.QuestionsRemaining.Category8)
+		questionPicked, game.QuestionsRemaining.Category8 = chosenQuestion(qNumber-questionResponse.Category7.CatCount, interfaces.QuestionsPlayed.Category8, game.QuestionsRemaining.Category8)
+		game.TotalQuestions--
+		interfaces.QuestionsPlayed.Category8 = removeQuestions(questionPicked, interfaces.QuestionsPlayed.Category8)
 	} else {
 		unires := interfaces.UniResponse[string]{
 			Message: "The number you typed is bigger than the number of questions, please try again.",
@@ -315,6 +332,280 @@ func GetChosenQuestion(c *gin.Context) {
 	}
 	c.IndentedJSON(http.StatusOK, unires)
 
+}
+
+func GetFifty(c *gin.Context) {
+	id, ok := c.GetQuery("id")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "id is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+
+	game, err := getgameID(id)
+	if err != nil {
+		unires := interfaces.UniResponse[string]{
+			Message: "Game not found",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+	if game.ActivePlayer.Name == game.Participants[0].Name {
+		if !game.Participants[0].Lifelines.Fifty {
+			game.Participants[0].Lifelines.Fifty = true
+			game.QuestionPicked.Points = "1"
+			unires := interfaces.UniResponse[string]{
+				Message: "50/50 lifeline was succesfully used",
+				Data:    game.QuestionPicked.Fifty,
+				Status:  "200",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+			return
+		} else {
+			unires := interfaces.UniResponse[string]{
+				Message: "This player has not available 50/50 lifeline",
+				Data:    "",
+				Status:  "404",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+		}
+	} else {
+		if !game.Participants[1].Lifelines.Fifty {
+			game.Participants[1].Lifelines.Fifty = true
+			game.QuestionPicked.Points = "1"
+			unires := interfaces.UniResponse[string]{
+				Message: "50/50 lifeline was succesfully used",
+				Data:    game.QuestionPicked.Fifty,
+				Status:  "200",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+			return
+		} else {
+			unires := interfaces.UniResponse[string]{
+				Message: "This player has not available 50/50 lifeline",
+				Data:    "",
+				Status:  "404",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+		}
+	}
+}
+
+func GetDouble(c *gin.Context) {
+	id, ok := c.GetQuery("id")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "id is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+
+	game, err := getgameID(id)
+	if err != nil {
+		unires := interfaces.UniResponse[string]{
+			Message: "Game not found",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+	if game.ActivePlayer.Name == game.Participants[0].Name {
+		if !game.Participants[0].Lifelines.Double {
+			game.Participants[0].Lifelines.Double = true
+			points, _ := strconv.Atoi(game.QuestionPicked.Points)
+			points = 2 * points
+			game.QuestionPicked.Points = strconv.Itoa(points)
+
+			unires := interfaces.UniResponse[string]{
+				Message: "2x lifeline was succesfully used",
+				Data:    "",
+				Status:  "200",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+			return
+		} else {
+			unires := interfaces.UniResponse[string]{
+				Message: "This player has not available 2x lifeline",
+				Data:    "",
+				Status:  "404",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+		}
+	} else {
+		if !game.Participants[1].Lifelines.Double {
+			game.Participants[1].Lifelines.Double = true
+			points, _ := strconv.Atoi(game.QuestionPicked.Points)
+			points = 2 * points
+			game.QuestionPicked.Points = strconv.Itoa(points)
+
+			unires := interfaces.UniResponse[string]{
+				Message: "2x lifeline was succesfully used",
+				Data:    game.QuestionPicked.Fifty,
+				Status:  "200",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+			return
+		} else {
+			unires := interfaces.UniResponse[string]{
+				Message: "This player has not available 2x lifeline",
+				Data:    "",
+				Status:  "404",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+		}
+	}
+}
+
+func GetPhone(c *gin.Context) {
+	id, ok := c.GetQuery("id")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "id is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+
+	game, err := getgameID(id)
+	if err != nil {
+		unires := interfaces.UniResponse[string]{
+			Message: "Game not found",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+	if game.ActivePlayer.Name == game.Participants[0].Name {
+		if !game.Participants[0].Lifelines.Phone {
+			game.Participants[0].Lifelines.Phone = true
+
+			unires := interfaces.UniResponse[string]{
+				Message: "Phone lifeline was succesfully used",
+				Data:    "",
+				Status:  "200",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+			return
+		} else {
+			unires := interfaces.UniResponse[string]{
+				Message: "This player has not available Phone lifeline",
+				Data:    "",
+				Status:  "404",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+		}
+	} else {
+		if !game.Participants[1].Lifelines.Phone {
+			game.Participants[1].Lifelines.Phone = true
+
+			unires := interfaces.UniResponse[string]{
+				Message: "Phone lifeline was succesfully used",
+				Data:    game.QuestionPicked.Fifty,
+				Status:  "200",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+			return
+		} else {
+			unires := interfaces.UniResponse[string]{
+				Message: "This player has not available Phone lifeline",
+				Data:    "",
+				Status:  "404",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+		}
+	}
+}
+
+func SetCorrectAnswer(c *gin.Context) {
+	id, ok := c.GetQuery("id")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "id is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+
+	game, err := getgameID(id)
+	if err != nil {
+		unires := interfaces.UniResponse[string]{
+			Message: "Game not found",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+
+	answer, ok := c.GetQuery("answer")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "answer is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+
+	if game.ActivePlayer.Name == game.Participants[0].Name {
+		game.ActivePlayer = game.Participants[1]
+		if answer == "y" {
+			qpoints, _ := strconv.Atoi(game.QuestionPicked.Points)
+			game.Participants[0].Points += qpoints
+			unires := interfaces.UniResponse[interfaces.User]{
+				Message: "Correct answer",
+				Data:    game.Participants[0],
+				Status:  "200",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+			return
+		} else {
+			unires := interfaces.UniResponse[string]{
+				Message: "Wrong answer",
+				Data:    "",
+				Status:  "404",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+			return
+		}
+	} else {
+		game.ActivePlayer = game.Participants[0]
+		if answer == "y" {
+			qpoints, _ := strconv.Atoi(game.QuestionPicked.Points)
+			game.Participants[1].Points += qpoints
+			unires := interfaces.UniResponse[interfaces.User]{
+				Message: "Correct answer",
+				Data:    game.Participants[1],
+				Status:  "200",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+			return
+		} else {
+			unires := interfaces.UniResponse[string]{
+				Message: "Wrong answer",
+				Data:    "",
+				Status:  "404",
+			}
+			c.IndentedJSON(http.StatusOK, unires)
+			return
+		}
+	}
 }
 
 func StartGame(qPlayed interfaces.QCategory) (interface{}, error) {
@@ -457,28 +748,28 @@ func chooseQuestion(activePlayer interfaces.User, qPlayed interfaces.QCategory, 
 		if questionIndex < 0 {
 			fmt.Println("This number is negative! Questions can't be negative, can they?")
 		} else if questionIndex >= 0 && questionIndex < cat1Counter {
-			questionPicked = chosenQuestion(questionIndex, qPlayed.Category1, qsRemaining.Category1)
+			questionPicked, _ = chosenQuestion(questionIndex, qPlayed.Category1, qsRemaining.Category1)
 			break
 		} else if questionIndex < cat2Counter {
-			questionPicked = chosenQuestion(questionIndex-cat1Counter, qPlayed.Category2, qsRemaining.Category2)
+			questionPicked, _ = chosenQuestion(questionIndex-cat1Counter, qPlayed.Category2, qsRemaining.Category2)
 			break
 		} else if questionIndex < cat3Counter {
-			questionPicked = chosenQuestion(questionIndex-cat2Counter, qPlayed.Category3, qsRemaining.Category3)
+			questionPicked, _ = chosenQuestion(questionIndex-cat2Counter, qPlayed.Category3, qsRemaining.Category3)
 			break
 		} else if questionIndex < cat4Counter {
-			questionPicked = chosenQuestion(questionIndex-cat3Counter, qPlayed.Category4, qsRemaining.Category4)
+			questionPicked, _ = chosenQuestion(questionIndex-cat3Counter, qPlayed.Category4, qsRemaining.Category4)
 			break
 		} else if questionIndex < cat5Counter {
-			questionPicked = chosenQuestion(questionIndex-cat4Counter, qPlayed.Category5, qsRemaining.Category5)
+			questionPicked, _ = chosenQuestion(questionIndex-cat4Counter, qPlayed.Category5, qsRemaining.Category5)
 			break
 		} else if questionIndex < cat6Counter {
-			questionPicked = chosenQuestion(questionIndex-cat5Counter, qPlayed.Category6, qsRemaining.Category6)
+			questionPicked, _ = chosenQuestion(questionIndex-cat5Counter, qPlayed.Category6, qsRemaining.Category6)
 			break
 		} else if questionIndex < cat7Counter {
-			questionPicked = chosenQuestion(questionIndex-cat6Counter, qPlayed.Category7, qsRemaining.Category7)
+			questionPicked, _ = chosenQuestion(questionIndex-cat6Counter, qPlayed.Category7, qsRemaining.Category7)
 			break
 		} else if questionIndex < cat8Counter {
-			questionPicked = chosenQuestion(questionIndex-cat7Counter, qPlayed.Category8, qsRemaining.Category8)
+			questionPicked, _ = chosenQuestion(questionIndex-cat7Counter, qPlayed.Category8, qsRemaining.Category8)
 			break
 		} else {
 			fmt.Println("This number is bigger than the number of questions left!")
@@ -487,28 +778,44 @@ func chooseQuestion(activePlayer interfaces.User, qPlayed interfaces.QCategory, 
 	return questionPicked
 }
 
-func chosenQuestion(questionIndex int, questionCategory interfaces.Category, qCategoryTBP interfaces.AllPoints) interfaces.Question {
+func chosenQuestion(questionIndex int, questionCategory interfaces.Category, qCategoryTBP interfaces.AllPoints) (interfaces.Question, interfaces.AllPoints) {
 	if questionCategory.OnePointers == 0 {
 		if questionCategory.TwoPointers == 0 {
-			return qCategoryTBP.ThreePointers[questionIndex]
+			r1 := qCategoryTBP.ThreePointers[questionIndex]
+			qCategoryTBP.ThreePointers = remove(qCategoryTBP.ThreePointers, questionIndex)
+			return r1, qCategoryTBP
 		} else if questionIndex < questionCategory.TwoPointers {
-			return qCategoryTBP.TwoPointers[questionIndex]
+			r1 := qCategoryTBP.TwoPointers[questionIndex]
+			qCategoryTBP.TwoPointers = remove(qCategoryTBP.TwoPointers, questionIndex)
+			return r1, qCategoryTBP
 		} else {
-			return qCategoryTBP.ThreePointers[questionIndex-questionCategory.TwoPointers]
+			r1 := qCategoryTBP.ThreePointers[questionIndex-questionCategory.TwoPointers]
+			qCategoryTBP.ThreePointers = remove(qCategoryTBP.ThreePointers, questionIndex-questionCategory.TwoPointers)
+			return r1, qCategoryTBP
 		}
 	} else if questionCategory.TwoPointers == 0 {
 		if questionIndex < questionCategory.OnePointers {
-			return qCategoryTBP.OnePointers[questionIndex]
+			r1 := qCategoryTBP.OnePointers[questionIndex]
+			qCategoryTBP.OnePointers = remove(qCategoryTBP.OnePointers, questionIndex)
+			return r1, qCategoryTBP
 		} else {
-			return qCategoryTBP.ThreePointers[questionIndex-questionCategory.OnePointers]
+			r1 := qCategoryTBP.ThreePointers[questionIndex-questionCategory.OnePointers]
+			qCategoryTBP.ThreePointers = remove(qCategoryTBP.ThreePointers, questionIndex-questionCategory.OnePointers)
+			return r1, qCategoryTBP
 		}
 	} else {
 		if questionIndex < questionCategory.OnePointers {
-			return qCategoryTBP.OnePointers[questionIndex]
+			r1 := qCategoryTBP.OnePointers[questionIndex]
+			qCategoryTBP.OnePointers = remove(qCategoryTBP.OnePointers, questionIndex)
+			return r1, qCategoryTBP
 		} else if questionIndex < (questionCategory.TwoPointers + questionCategory.OnePointers) {
-			return qCategoryTBP.TwoPointers[questionIndex-questionCategory.OnePointers]
+			r1 := qCategoryTBP.TwoPointers[questionIndex-questionCategory.OnePointers]
+			qCategoryTBP.TwoPointers = remove(qCategoryTBP.TwoPointers, questionIndex-questionCategory.OnePointers)
+			return r1, qCategoryTBP
 		} else {
-			return qCategoryTBP.ThreePointers[questionIndex-questionCategory.OnePointers-questionCategory.TwoPointers]
+			r1 := qCategoryTBP.ThreePointers[questionIndex-questionCategory.OnePointers-questionCategory.TwoPointers]
+			qCategoryTBP.ThreePointers = remove(qCategoryTBP.ThreePointers, questionIndex-questionCategory.OnePointers-questionCategory.TwoPointers)
+			return r1, qCategoryTBP
 		}
 	}
 }
@@ -620,4 +927,19 @@ func YNScanner() string {
 		}
 	}
 	return tester
+}
+
+func remove(slice []interfaces.Question, s int) []interfaces.Question {
+	return append(slice[:s], slice[s+1:]...)
+}
+
+func removeQuestions(p interfaces.Question, a interfaces.Category) interfaces.Category {
+	if p.Points == "1" {
+		a.OnePointers--
+	} else if p.Points == "2" {
+		a.TwoPointers--
+	} else {
+		a.ThreePointers--
+	}
+	return a
 }
