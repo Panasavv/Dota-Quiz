@@ -174,6 +174,149 @@ func SetQuestions(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, unires)
 }
 
+func GetQuestions(c *gin.Context) {
+	id, ok := c.GetQuery("id")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "id is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+
+	game, err := getgameID(id)
+	if err != nil {
+		unires := interfaces.UniResponse[string]{
+			Message: "Game not found",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+	questionResponse := printQs(*game)
+
+	unires := interfaces.UniResponse[interfaces.QuestionResponse]{
+		Message: "Questions remaining are: ",
+		Data:    questionResponse,
+		Status:  "200",
+	}
+	c.IndentedJSON(http.StatusOK, unires)
+}
+
+func printQs(game interfaces.Game) interfaces.QuestionResponse {
+	var questionResponse interfaces.QuestionResponse
+	cat1String, cat1Counter := PrintQuestions(0, interfaces.QuestionsPlayed.Category1, game.QuestionsRemaining.Category1)
+	questionResponse.Category1.CatString = string("Category 1: " + cat1String)
+	questionResponse.Category1.CatCount = cat1Counter
+	cat2String, cat2Counter := PrintQuestions(cat1Counter, interfaces.QuestionsPlayed.Category2, game.QuestionsRemaining.Category2)
+	questionResponse.Category2.CatString = string("Category 2: " + cat2String)
+	questionResponse.Category2.CatCount = cat2Counter
+	cat3String, cat3Counter := PrintQuestions(cat2Counter, interfaces.QuestionsPlayed.Category3, game.QuestionsRemaining.Category3)
+	questionResponse.Category3.CatString = string("Category 3: " + cat3String)
+	questionResponse.Category3.CatCount = cat3Counter
+	cat4String, cat4Counter := PrintQuestions(cat3Counter, interfaces.QuestionsPlayed.Category4, game.QuestionsRemaining.Category4)
+	questionResponse.Category4.CatString = string("Category 4: " + cat4String)
+	questionResponse.Category4.CatCount = cat4Counter
+	cat5String, cat5Counter := PrintQuestions(cat4Counter, interfaces.QuestionsPlayed.Category5, game.QuestionsRemaining.Category5)
+	questionResponse.Category5.CatString = string("Category 5: " + cat5String)
+	questionResponse.Category5.CatCount = cat5Counter
+	cat6String, cat6Counter := PrintQuestions(cat5Counter, interfaces.QuestionsPlayed.Category6, game.QuestionsRemaining.Category6)
+	questionResponse.Category6.CatString = string("Category 6: " + cat6String)
+	questionResponse.Category6.CatCount = cat6Counter
+	cat7String, cat7Counter := PrintQuestions(cat6Counter, interfaces.QuestionsPlayed.Category7, game.QuestionsRemaining.Category7)
+	questionResponse.Category7.CatString = string("Category 7: " + cat7String)
+	questionResponse.Category7.CatCount = cat7Counter
+	cat8String, cat8Counter := PrintQuestions(cat7Counter, interfaces.QuestionsPlayed.Category8, game.QuestionsRemaining.Category8)
+	questionResponse.Category8.CatString = string("Category 8: " + cat8String)
+	questionResponse.Category8.CatCount = cat8Counter
+	return questionResponse
+}
+
+func GetChosenQuestion(c *gin.Context) {
+	id, ok := c.GetQuery("id")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "id is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+
+	game, err := getgameID(id)
+	if err != nil {
+		unires := interfaces.UniResponse[string]{
+			Message: "Game not found",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+	questionResponse := printQs(*game)
+
+	qNumberPre, ok := c.GetQuery("qNumber")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "qNumber is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+	qNumber, err := strconv.Atoi(qNumberPre)
+	qNumber--
+	var questionPicked interfaces.Question
+
+	if qNumber < 0 {
+		unires := interfaces.UniResponse[string]{
+			Message: "qNumber is negative or zero, please try again",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	} else if qNumber >= 0 && qNumber < questionResponse.Category1.CatCount {
+		questionPicked = chosenQuestion(qNumber, interfaces.QuestionsPlayed.Category1, game.QuestionsRemaining.Category1)
+	} else if qNumber < questionResponse.Category2.CatCount {
+		questionPicked = chosenQuestion(qNumber-questionResponse.Category1.CatCount, interfaces.QuestionsPlayed.Category2, game.QuestionsRemaining.Category2)
+	} else if qNumber < questionResponse.Category3.CatCount {
+		questionPicked = chosenQuestion(qNumber-questionResponse.Category2.CatCount, interfaces.QuestionsPlayed.Category3, game.QuestionsRemaining.Category3)
+	} else if qNumber < questionResponse.Category4.CatCount {
+		questionPicked = chosenQuestion(qNumber-questionResponse.Category3.CatCount, interfaces.QuestionsPlayed.Category4, game.QuestionsRemaining.Category4)
+	} else if qNumber < questionResponse.Category5.CatCount {
+		questionPicked = chosenQuestion(qNumber-questionResponse.Category4.CatCount, interfaces.QuestionsPlayed.Category5, game.QuestionsRemaining.Category5)
+	} else if qNumber < questionResponse.Category6.CatCount {
+		questionPicked = chosenQuestion(qNumber-questionResponse.Category5.CatCount, interfaces.QuestionsPlayed.Category6, game.QuestionsRemaining.Category6)
+	} else if qNumber < questionResponse.Category7.CatCount {
+		questionPicked = chosenQuestion(qNumber-questionResponse.Category6.CatCount, interfaces.QuestionsPlayed.Category7, game.QuestionsRemaining.Category7)
+	} else if qNumber < questionResponse.Category8.CatCount {
+		questionPicked = chosenQuestion(qNumber-questionResponse.Category7.CatCount, interfaces.QuestionsPlayed.Category8, game.QuestionsRemaining.Category8)
+	} else {
+		unires := interfaces.UniResponse[string]{
+			Message: "The number you typed is bigger than the number of questions, please try again.",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+	game.QuestionPicked = questionPicked
+
+	unires := interfaces.UniResponse[interfaces.Question]{
+		Message: "This is the question to be answered",
+		Data:    questionPicked,
+		Status:  "200",
+	}
+	c.IndentedJSON(http.StatusOK, unires)
+
+}
+
 func StartGame(qPlayed interfaces.QCategory) (interface{}, error) {
 	qsToBePlayed := QuestionHandler(qPlayed)
 	var qPicked interfaces.Question

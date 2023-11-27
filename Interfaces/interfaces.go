@@ -81,6 +81,22 @@ type Helpers struct {
 	Double bool
 }
 
+type QuestionResponse struct {
+	Category1 CategoryResponse `json:"category1"`
+	Category2 CategoryResponse `json:"category2"`
+	Category3 CategoryResponse `json:"category3"`
+	Category4 CategoryResponse `json:"category4"`
+	Category5 CategoryResponse `json:"category5"`
+	Category6 CategoryResponse `json:"category6"`
+	Category7 CategoryResponse `json:"category7"`
+	Category8 CategoryResponse `json:"category8"`
+}
+
+type CategoryResponse struct {
+	CatString string `json:"catstring"`
+	CatCount  int    `json:"catcount"`
+}
+
 type UniResponse[T any] struct {
 	Message string `json:"message"`
 	Data    T      `json:"data"`
