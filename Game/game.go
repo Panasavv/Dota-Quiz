@@ -568,14 +568,22 @@ func SetCorrectAnswer(c *gin.Context) {
 		if answer == "y" {
 			qpoints, _ := strconv.Atoi(game.QuestionPicked.Points)
 			game.Participants[0].Points += qpoints
-			unires := interfaces.UniResponse[interfaces.User]{
+			if game.TotalQuestions == 0 {
+				GameEnd(c)
+				return
+			}
+			unires := interfaces.UniResponse[string]{
 				Message: "Correct answer",
-				Data:    game.Participants[0],
+				Data:    (game.Participants[0].Name + ":" + strconv.Itoa(game.Participants[0].Points)),
 				Status:  "200",
 			}
 			c.IndentedJSON(http.StatusOK, unires)
 			return
 		} else {
+			if game.TotalQuestions == 0 {
+				GameEnd(c)
+				return
+			}
 			unires := interfaces.UniResponse[string]{
 				Message: "Wrong answer",
 				Data:    "",
@@ -589,14 +597,22 @@ func SetCorrectAnswer(c *gin.Context) {
 		if answer == "y" {
 			qpoints, _ := strconv.Atoi(game.QuestionPicked.Points)
 			game.Participants[1].Points += qpoints
-			unires := interfaces.UniResponse[interfaces.User]{
+			if game.TotalQuestions == 0 {
+				GameEnd(c)
+				return
+			}
+			unires := interfaces.UniResponse[string]{
 				Message: "Correct answer",
-				Data:    game.Participants[1],
+				Data:    (game.Participants[1].Name + ":" + strconv.Itoa(game.Participants[1].Points)),
 				Status:  "200",
 			}
 			c.IndentedJSON(http.StatusOK, unires)
 			return
 		} else {
+			if game.TotalQuestions == 0 {
+				GameEnd(c)
+				return
+			}
 			unires := interfaces.UniResponse[string]{
 				Message: "Wrong answer",
 				Data:    "",
@@ -731,6 +747,48 @@ func QuestionHandler(qPlayed interfaces.QCategory) interfaces.AllQuestions {
 		allQuestions.Category8, _ = questions.GetQuestion("QFolder/Category8.json", qPlayed.Category8.OnePointers, qPlayed.Category8.TwoPointers, qPlayed.Category8.ThreePointers)
 	}
 	return allQuestions
+}
+
+func GameEnd(c *gin.Context) {
+	id, ok := c.GetQuery("id")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "id is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+
+	game, err := getgameID(id)
+	if err != nil {
+		unires := interfaces.UniResponse[string]{
+			Message: "Game not found",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+
+	if game.Participants[0].Points > game.Participants[1].Points {
+		game.Winner = game.Participants[0]
+	} else if game.Participants[1].Points > game.Participants[0].Points {
+		game.Winner = game.Participants[1]
+	} else {
+		game.Winner = interfaces.User{
+			Name:   "Game was a tie!",
+			Points: game.Participants[0].Points,
+		}
+	}
+	var endString string = "Winner: " + game.Winner.Name + " with: " + strconv.Itoa(game.Winner.Points) + " points"
+	unires := interfaces.UniResponse[string]{
+		Message: "Game ended!",
+		Data:    endString,
+		Status:  "200",
+	}
+	c.IndentedJSON(http.StatusOK, unires)
 }
 
 func remove(slice []interfaces.Question, s int) []interfaces.Question {
