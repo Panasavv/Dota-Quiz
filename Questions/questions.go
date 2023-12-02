@@ -7,14 +7,48 @@ import (
 	"image/jpeg"
 	"interfaces"
 	"io"
+	"io/ioutil"
 	"math/rand"
+	"net/http"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"github.com/nfnt/resize"
 )
 
 type SubImager interface {
 	SubImage(r image.Rectangle) image.Image
+}
+
+func PreviewImage(c *gin.Context) {
+	// Assuming you have an image URL or path, you can fetch the image
+	id, ok := c.GetQuery("id")
+	if !ok {
+		unires := interfaces.UniResponse[string]{
+			Message: "id is missing",
+			Data:    "",
+			Status:  "404",
+		}
+		c.IndentedJSON(http.StatusOK, unires)
+		return
+	}
+	imagePath := "./Questions/card images/3/" + id
+
+	imageBytes, err := ioutil.ReadFile(imagePath)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read image"})
+		return
+	}
+
+	// Determine the content type based on the file extension
+	contentType := http.DetectContentType(imageBytes)
+
+	// Set the appropriate headers for image response
+	c.Header("Content-Type", contentType)
+	c.Header("Content-Length", fmt.Sprint(len(imageBytes)))
+
+	// Serve the image content
+	c.Data(http.StatusOK, contentType, imageBytes)
 }
 
 func GetQuestion(s string, onepointers int, twopointers int, threepointers int) (interfaces.AllPoints, error) {

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"interfaces"
+	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"questions"
@@ -324,6 +325,32 @@ func GetChosenQuestion(c *gin.Context) {
 		return
 	}
 	game.QuestionPicked = questionPicked
+	if questionPicked.Qtype == "cat1" {
+		imagePath := "./Questions/card images/"
+		if questionPicked.Points == "1" {
+			imagePath += "1/" + questionPicked.Text
+		} else if questionPicked.Points == "2" {
+			imagePath += "2/" + questionPicked.Text
+		} else {
+			imagePath += "3/" + questionPicked.Text
+		}
+
+		imageBytes, err := ioutil.ReadFile(imagePath)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read image"})
+			return
+		}
+
+		// Determine the content type based on the file extension
+		contentType := http.DetectContentType(imageBytes)
+
+		// Set the appropriate headers for image response
+		c.Header("Content-Type", contentType)
+		c.Header("Content-Length", fmt.Sprint(len(imageBytes)))
+
+		// Serve the image content
+		c.Data(http.StatusOK, contentType, imageBytes)
+	}
 
 	unires := interfaces.UniResponse[interfaces.Question]{
 		Message: "This is the question to be answered",

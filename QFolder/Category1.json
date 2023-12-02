@@ -6,7 +6,7 @@
       "answer": "absorb.jpg",
       "points": "1",
       "fifty": "absord or forbid",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -16,7 +16,7 @@
       "answer": "annul.jpg",
       "points": "1",
       "fifty": "steel sabotage or annul",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -26,7 +26,7 @@
       "answer": "call of the herd.jpg",
       "points": "1",
       "fifty": "call of the herd or wild elephant",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -36,7 +36,7 @@
       "answer": "clone.jpg",
       "points": "1",
       "fifty": "clone or mirror mockery",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -46,7 +46,7 @@
       "answer": "deathmark",
       "points": "1",
       "fifty": "break the ice or deathmark",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -56,7 +56,7 @@
       "answer": "enlightened tutor.jpg",
       "points": "1",
       "fifty": "enlightened tutor or idyllic tutor",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -66,7 +66,7 @@
       "answer": "fevered visions.jpg",
       "points": "1",
       "fifty": "sorcerer class or fevered visions",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -76,7 +76,7 @@
       "answer": "gatekeeper of malakir.jpg",
       "points": "1",
       "fifty": "gatekeeper of malakir or Josu Vess, Lich Knight",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -86,7 +86,7 @@
       "answer": "goblin welder.jpg",
       "points": "1",
       "fifty": "mogg fanatic or goblin welder",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -96,7 +96,7 @@
       "answer": "grapple with the past.jpg",
       "points": "1",
       "fifty": "grapple with the past or make a wish",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -106,7 +106,7 @@
       "answer": "hashep oasis.jpg",
       "points": "1",
       "fifty": "desert of the indomitable or hashep oasis",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -116,7 +116,7 @@
       "answer": "lightning mauler.jpg",
       "points": "1",
       "fifty": "lightning mauler or ash zealot",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -126,7 +126,7 @@
       "answer": "lotleth troll.jpg",
       "points": "1",
       "fifty": "molderhulk or lotleth troll",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -136,7 +136,7 @@
       "answer": "opt.jpg",
       "points": "1",
       "fifty": "opt or consider",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -146,7 +146,7 @@
       "answer": "rampaging baloths.jpg",
       "points": "1",
       "fifty": "rampaging baloths or ravenous baloth",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -156,7 +156,7 @@
       "answer": "remove soul.jpg",
       "points": "1",
       "fifty": "essence scatter or remove soul",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -166,7 +166,7 @@
       "answer": "ricochet trap.jpg",
       "points": "1",
       "fifty": "shunt or ricochet trap",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -176,7 +176,7 @@
       "answer": "spark elemental.jpg",
       "points": "1",
       "fifty": "spark elemental or ball lightning",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -186,7 +186,7 @@
       "answer": "sunblast angel.jpg",
       "points": "1",
       "fifty": "angel of despair or sunblast angel",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -196,7 +196,7 @@
       "answer": "titanic ultimatum.jpg",
       "points": "1",
       "fifty": "march of the multitudes or titanic ultimatum",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -206,7 +206,7 @@
       "answer": "troll ascetic.jpg",
       "points": "1",
       "fifty": "troll ascetic or thrun, the last troll",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -216,7 +216,7 @@
       "answer": "unsummon.jpg",
       "points": "1",
       "fifty": "unsummon or boomerang",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -226,7 +226,7 @@
       "answer": "wargate.jpg",
       "points": "1",
       "fifty": "clarion ultimatum or wargate",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -236,7 +236,7 @@
       "answer": "wee dragonauts.jpg",
       "points": "1",
       "fifty": "stormchaser mage or wee dragonauts",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -246,7 +246,7 @@
       "answer": "wirewood symbiote.jpg",
       "points": "1",
       "fifty": "wirewood symbiote or essence symbiote",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     }
@@ -258,7 +258,7 @@
       "answer": "academy rector.jpg",
       "points": "2",
       "fifty": "academy rector or jasmine seer",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -268,7 +268,7 @@
       "answer": "azors gateway.jpg",
       "points": "2",
       "fifty": "azors gateway or the immortal sun",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -278,7 +278,7 @@
       "answer": "bee sting.jpg",
       "points": "2",
       "fifty": "killer bees or bee sting",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -288,7 +288,7 @@
       "answer": "cancel.jpg",
       "points": "2",
       "fifty": "cancel or rewind",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -298,7 +298,7 @@
       "answer": "deathcap cultivator.jpg",
       "points": "2",
       "fifty": "chevill, bane of monsters or deathcap cultivator",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -308,7 +308,7 @@
       "answer": "echoing calm.jpg",
       "points": "2",
       "fifty": "echoing calm or disenchant",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -318,7 +318,7 @@
       "answer": "elvish piper.jpg",
       "points": "2",
       "fifty": "elvish piper or elvish lookout",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -328,7 +328,7 @@
       "answer": "feather the redeemed.jpg",
       "points": "2",
       "fifty": "skyknight legionnaire or feather the redeemed",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -338,7 +338,7 @@
       "answer": "gnarlid pack.jpg",
       "points": "2",
       "fifty": "gnarlid colony or gnarlid pack",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -348,7 +348,7 @@
       "answer": "harrow.jpg",
       "points": "2",
       "fifty": "harrow or tranquility",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -358,7 +358,7 @@
       "answer": "honored hierarch.jpg",
       "points": "2",
       "fifty": "noble hierarch or honored hierarch",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -368,7 +368,7 @@
       "answer": "icy manipulator.jpg",
       "points": "2",
       "fifty": "icy manipulator or palantir of orthanc",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -378,7 +378,7 @@
       "answer": "iroas god of victory.jpg",
       "points": "2",
       "fifty": "raiyuu, storm's edge or iroas, god of victory",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -388,7 +388,7 @@
       "answer": "mage ring network.jpg",
       "points": "2",
       "fifty": "mage ring network or foundry of the consuls",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -398,7 +398,7 @@
       "answer": "make a stand.jpg",
       "points": "2",
       "fifty": "make a stand or unbreakable formation",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -408,7 +408,7 @@
       "answer": "memory lapse.jpg",
       "points": "2",
       "fifty": "remand or memory lapse",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -418,7 +418,7 @@
       "answer": "merciless eviction.jpg",
       "points": "2",
       "fifty": "damnation or merciless eviction",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -428,7 +428,7 @@
       "answer": "predict.jpg",
       "points": "2",
       "fifty": "predict or peek",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -438,7 +438,7 @@
       "answer": "regenerate.jpg",
       "points": "2",
       "fifty": "nature's spiral or regenerate",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -448,7 +448,7 @@
       "answer": "shimian specter.jpg",
       "points": "2",
       "fifty": "shimian specter or hypnotic specter",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -458,7 +458,7 @@
       "answer": "terror.jpg",
       "points": "2",
       "fifty": "mind wrench or terror",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -468,7 +468,7 @@
       "answer": "time stretch.jpg",
       "points": "2",
       "fifty": "time stretch or time wrap",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -478,7 +478,7 @@
       "answer": "unmake.jpg",
       "points": "2",
       "fifty": "unmake or spectral procession",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -488,7 +488,7 @@
       "answer": "yavimaya enchantress.jpg",
       "points": "2",
       "fifty": "yavimaya enchantress or eternal witness",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     },
@@ -498,7 +498,7 @@
       "answer": "zap.jpg",
       "points": "2",
       "fifty": "stun or zap",
-      "qtype": " ",
+      "qtype": "cat1",
       "comments": " ",
       "isplayed": false
     }

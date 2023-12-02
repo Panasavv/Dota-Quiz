@@ -2,6 +2,7 @@ package main
 
 import (
 	"game"
+	"questions"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,6 +20,7 @@ func main() {
 	router.GET("/getDouble", game.GetDouble)
 	router.GET("/getPhone", game.GetPhone)
 	router.POST("/setCorrectAnswer", game.SetCorrectAnswer)
+	router.GET("/previewImage", questions.PreviewImage)
 	router.Run("localhost:8080")
 	//game.StartGame(*QuestionsPlayed)
 
