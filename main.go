@@ -23,3 +23,12 @@ func main() {
 	//game.StartGame(*QuestionsPlayed)
 
 }
+
+/*for i := 0; i < 17; i++ {
+	questions.CropImages(interfaces.ImagesTBC1[i])
+}
+for i := 0; i < 21; i++ {
+		questions.CropImages(interfaces.ImagesTBC3[i])
+	}
+	return
+*/

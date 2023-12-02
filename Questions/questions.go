@@ -3,11 +3,19 @@ package questions
 import (
 	"encoding/json"
 	"fmt"
+	"image"
+	"image/jpeg"
 	"interfaces"
 	"io"
 	"math/rand"
 	"os"
+
+	"github.com/nfnt/resize"
 )
+
+type SubImager interface {
+	SubImage(r image.Rectangle) image.Image
+}
 
 func GetQuestion(s string, onepointers int, twopointers int, threepointers int) (interfaces.AllPoints, error) {
 	questionsReturned := interfaces.AllPoints{}
@@ -41,4 +49,33 @@ func GetQuestion(s string, onepointers int, twopointers int, threepointers int) 
 		questionsReturned.ThreePointers = append(questionsReturned.ThreePointers, threePointers.ThreePointers[k])
 	}
 	return questionsReturned, nil
+}
+
+func CropImages(imgName string) {
+	originalImageFile, err := os.Open(string("./Questions/card images/3/" + imgName + ".jpg"))
+	if err != nil {
+		panic(err)
+	}
+	defer originalImageFile.Close()
+
+	originalImage, err := jpeg.Decode(originalImageFile)
+	if err != nil {
+		panic(err)
+	}
+	bounds := originalImage.Bounds()
+	width := bounds.Dx()
+	cropSize := image.Rect(0, 0, width/2+85, width/2+30)
+	//cropSize = cropSize.Add(image.Point{30, 35}) //old border
+	cropSize = cropSize.Add(image.Point{25, 43}) //new border
+	croppedImage := originalImage.(SubImager).SubImage(cropSize)
+	croppedImage2 := resize.Resize(800, 0, croppedImage, resize.Lanczos3)
+
+	croppedImageFile, err := os.Create(string("./Questions/card images/3/" + imgName + "_question.jpg"))
+	if err != nil {
+		panic(err)
+	}
+	defer croppedImageFile.Close()
+	if err := jpeg.Encode(croppedImageFile, croppedImage2, nil); err != nil {
+		panic(err)
+	}
 }
